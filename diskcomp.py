@@ -1,6 +1,5 @@
 import numpy as np
 import argparse as ag
-import glob
 import matplotlib
 matplotlib.rc('text', usetex=True)
 import matplotlib.pyplot as plt
