@@ -144,7 +144,6 @@ for i in range(Nr):
 
 #only use radii where it actually found a valid solution
 good = (badTs==1)&(badRhos==1)
-print(np.sum(good))
 
 rs = rs[good]
 ts = ts[good]
