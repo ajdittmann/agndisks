@@ -8,13 +8,13 @@ from scipy import optimize as sciop
 from scipy import interpolate as scint
 
 # resolution
-rmax = 10**6.0	#maximum radius in Rg
-rmin = 10**1.0	#minimum radius in Rg
+rmax = 10**5.0	#maximum radius in Rg
+rmin = 6	#minimum radius in Rg
 Nr = 10000
 
 #model parameters
 eta = 0.1	# Eddington fraction
-M = 10**7	# MBH/Msun
+M = 10**6	# MBH/Msun
 alpha = 0.1	# effective viscosity parameter
 X = 0.72	# hydrogen mass fraction
 Z = 0.02	# 'metals' mass fraction
@@ -69,13 +69,11 @@ if opacTable is not None:
             rhoread[irho]=float(numbers_str[0])
             treadnew[it]=float(numbers_str[1])
             rosscombineread[it,irho]=float(numbers_str[2])
-  #opacityinter = scint.interp2d(np.log10(rhoread), np.log10(treadnew), np.log10(rosscombineread), kind='linear')
   opacityinter = scint.RectBivariateSpline(np.log10(rhoread), np.log10(treadnew), np.log10(rosscombineread.T), kx=1, ky=1 ) #kind='linear')
   maxT = np.max(treadnew)
 
   def opacTabulated(rho, T):
     if T > maxT: return kes
-    #else: return 10.0**opacityinter(np.log10(rho), np.log10(T))
     else: return 10.0**opacityinter.ev(np.log10(rho), np.log10(T))
 
 def opacity(rho, T):
@@ -132,17 +130,28 @@ taus = np.empty(Nr)
 badTs = np.empty(Nr)
 badRhos = np.empty(Nr)
 for i in range(Nr):
-  if i==0:  Ti, rhoi, Hi, Pi, taui, terr, rerr = getvals(rs[i])
-  else:  Ti, rhoi, Hi, Pi, taui, terr, rerr = getvals(rs[i], ts[i-1], rhos[i-1])
-  ts[i] = Ti
-  rhos[i] = rhoi
+  if i==0:
+    Ti, rhoi, Hi, Pi, taui, terr, rerr = getvals(rs[i])
+  else:
+    if badTs[i-1]==1: tguess = ts[i-1]
+    else:
+      lastGoodT = np.nonzero(badTs==1)[0][-1]
+      tguess = ts[lastGoodT]
+    if badRhos[i-1]==1: rguess = rhos[i-1]
+    else:
+      lastGoodR = np.nonzero(badRhos==1)[0][-1]
+      rguess = rhos[lastGoodR]
+    Ti, rhoi, Hi, Pi, taui, terr, rerr = getvals(rs[i], tguess, rguess)
+
   hs[i] = Hi
   taus[i] = taui
   ps[i] = Pi
   badTs[i] = terr
   badRhos[i] = rerr
+  ts[i] = Ti
+  rhos[i] = rhoi
 
-#only use radii where it actually found a valid solution
+#only use radii where it actually found a valid solution for both T and rho
 good = (badTs==1)&(badRhos==1)
 
 rs = rs[good]
