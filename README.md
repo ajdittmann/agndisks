@@ -13,4 +13,7 @@ simply use
 Resolution parameters are currently controlled using the `rmax`, `rmin`, and `Nr` variables. 
 Free parameters in the accretion disk model are controlled by setting the `eta` (fraction of Eddington accretion rate), `M` (SMBH mass in M/M☉), `alpha` (SS73 α parameter), `X` (hydrogen mass fraction), and `Z` (metal mass fraction). `eps`, the efficiency at which rest mass is converted into energy during accretion onto the SMBH, is used to define the Eddington accretion rate.  
 
-To compute a disk model, simply run `python diskcomp.py`. 
+To compute a disk model, simply run 
+
+`python diskcomp.py`.
+By default, a plot and text file of the model will be saved. 

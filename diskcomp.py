@@ -212,3 +212,19 @@ ax[2,1].set_ylabel(r'$H/r$',labelpad=-2)
 ax[3,1].set_ylabel(r'$Q$')
 
 plt.savefig('diskmodel.pdf')
+
+output = np.empty((Nr,12))
+output[:,0] = rs/Rg
+output[:,1] = fwd(rs/Rg)
+output[:,2] = rhos
+output[:,3] = omegas
+output[:,4] = ts
+output[:,5] = ps
+output[:,6] = sigmas
+output[:,7] = cs
+output[:,8] = kappas
+output[:,9] = taus
+output[:,10] = hs/rs
+output[:,11] = Qs
+head = "0:r/Rg\t1:r/pc\t2:density\t3:angular velocity\t4:temperature\t5:pressure\t6:surface density\t7:sound speed\t8:opacity\t9:optical depth\t10:disk aspect ratio (H/r)\t11:Toomre Q"
+np.savetxt('diskmodel.txt', output, header=head)
