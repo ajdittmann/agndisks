@@ -8,21 +8,21 @@ from scipy import optimize as sciop
 from scipy import interpolate as scint
 
 # resolution
-rmax = 10**5.0	#maximum radius in Rg
+rmax = 10**6.0	#maximum radius in Rg
 rmin = 6	#minimum radius in Rg
 Nr = 10000
 
 #model parameters
 eta = 0.1	# Eddington fraction
-M = 10**6	# MBH/Msun
+M = 10**7	# MBH/Msun
 alpha = 0.1	# effective viscosity parameter
 X = 0.72	# hydrogen mass fraction
 Z = 0.02	# 'metals' mass fraction
 eps = 0.1	# efficiency of rest mass -> energy for eddington accretion rate
 
 #opacity table - set to None for Kramers opacity
-#opacTable = None
-opacTable = "combined-opacity-main/opacitysolar09dustq3p5amax0p1new.txt"
+opacTable = None
+#opacTable = "combined-opacity/opacitysolar09dustq3p5amax0p1new.txt"
 
 
 #physical constants
@@ -69,7 +69,7 @@ if opacTable is not None:
             rhoread[irho]=float(numbers_str[0])
             treadnew[it]=float(numbers_str[1])
             rosscombineread[it,irho]=float(numbers_str[2])
-  opacityinter = scint.RectBivariateSpline(np.log10(rhoread), np.log10(treadnew), np.log10(rosscombineread.T), kx=1, ky=1 ) #kind='linear')
+  opacityinter = scint.RectBivariateSpline(np.log10(rhoread), np.log10(treadnew), np.log10(rosscombineread.T), kx=1, ky=1)
   maxT = np.max(treadnew)
 
   def opacTabulated(rho, T):
@@ -151,7 +151,7 @@ for i in range(Nr):
   ts[i] = Ti
   rhos[i] = rhoi
 
-#only use radii where it actually found a valid solution for both T and rho
+#only use radii where it actually found a valid solution
 good = (badTs==1)&(badRhos==1)
 
 rs = rs[good]
@@ -168,7 +168,8 @@ kappas = taus/(rhos*hs)
 sigmas = 2*hs*rhos
 Qs = cs*omegas/(np.pi*sigmas*G)
 
-
+# below are some example plotting functions for the disk model outputs.
+# for setting Rg and pc axis labels simultaneously
 def fwd(rg):
   return rg*Rg/(3.086*10**18)
 def bwd(pc):
