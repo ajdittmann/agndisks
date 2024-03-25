@@ -14,7 +14,7 @@ Nr = 10000
 
 #model parameters
 eta = 0.1	# Eddington fraction
-M = 10**7	# MBH/Msun
+logm = 7	# log_10(MBH/Msun)
 alpha = 0.1	# effective viscosity parameter
 X = 0.72	# hydrogen mass fraction
 Z = 0.02	# 'metals' mass fraction
@@ -36,6 +36,7 @@ sigmaT = 6.6524587158*10**-25
 a = 4*sigma/c
 
 #Derived parameters
+M = 10.0**logm
 MBH = M*MSUN
 Mdot = eta*4*np.pi*G*MBH*mh/(eps*c*sigmaT)
 mu = mh*4/(3+5*X-Z)
